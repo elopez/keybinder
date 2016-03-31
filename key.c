@@ -22,10 +22,12 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #include <linux/input.h>
 #include <linux/ioctl.h>
@@ -44,15 +46,24 @@ int main (int argc, char **argv)
 
     /* Check parameters */
     if (argv[1] == NULL) {
-        printf("Usage: %s /dev/input/eventX\n", argv[0]);
+        printf("Usage: %s [-d] /dev/input/eventX\n", argv[0]);
         return 0;
     }
 
     if (getuid() != 0)
         printf("You are not root! This may not work...\n");
 
+#if 0
     if (argc > 1)
         device = argv[1];
+#endif
+    if (argc == 2)
+        device = argv[1];
+    if (argc == 3) {
+        device = argv[2];
+        if (strcmp(argv[1],"-d") == 0) beDaemon = 1;
+    }
+    if (beDaemon) daemon(0,0);
 
     /* Open device */
     if ((fd = open (device, O_RDONLY)) == -1)
