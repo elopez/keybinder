@@ -40,6 +40,8 @@ int loadconfig(keymap *map)
         return -1;
 
     while ((read = getline(&line, &alloc, fp)) != -1) {
+        if (line[0] == '#') continue;
+        if (line[read-1] == 0x0a) line[read-1]=0;
         /* fetch keycode*/
         tmp = strtok(line, ",");
         if (tmp == NULL)
